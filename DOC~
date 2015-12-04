@@ -1,0 +1,12 @@
+In this project ,we implemented a driver program for a ex2 file system. We completed all the basic function and the extra credits.
+
+We first implement the first three functions which is relatively easy.
+ the first one required only a constant from ext2fs.h, the second required the first function plus a macro from ext2fs.h, and the third one is dependent on the second function.
+In get_block_group() which should return a pointer to the start of the block which described the different block groups. This block should reside in the next block to superblock. So we just need to firstly find the superblock and then we could locate it.
+Then we could use get_block_group() to implement the get_inode function. Because the inode table is an attributes of block groups. In this way, we could first find the inode table and then plus the offset to find the target inode.
+
+For the last two high-level funcitons,what we need to do is to search for a file/directory within a directory. It was a simple linear search through a linked-list array of directory entries, and by using strncmp() we could check the directory entry's name against the desired name. For getting a file inode from a path, we split out a helper function which would give us the number of slashes in a path, as well as used the given helper function which split up a path into an array of directory/file names. We then simply looped through this list of directory/file names, and for each one updated a pointer to the current directory's inode. If we were on the last iteration, we didn't search anymore because we had found the file! If during our looping we got an inode of 0, we knew the path was wrong and return 0 from the function.
+
+indirect blocks:
+We also completed the extra credit by altering ext2cat.c to handle files big enough to use indirect blocks in the file system.
+Inode contains direct pointers to the data block of a file. If the file is too big to serve the direct pointer. Therefore, indirect pointer is needed so that each of the pointer point to a block that contains the pointer to data blocks. We can use varialbe bytes_read to track how many bytes has been readed, and compare it with the file size. We access the indirect block right after reading direct block, first retrive the pointer of the data block, then go for the data. The implementation is in ext2cat.c.
